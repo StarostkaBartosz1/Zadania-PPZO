@@ -1,0 +1,24 @@
+# Program obliczający średnią ocen i sprawdzający zaliczenie
+
+liczba_ocen = int(input("Podaj liczbę ocen do wprowadzenia: "))
+
+suma_ocen = 0  
+
+for i in range(liczba_ocen):
+    ocena = float(input(f"Podaj ocenę {i + 1} (w skali 1–6): "))
+    
+    
+    if ocena < 1 or ocena > 6:
+        print("Błąd: Ocena musi być w przedziale 1–6.")
+        exit()
+    
+    suma_ocen += ocena
+
+srednia = suma_ocen / liczba_ocen
+
+print(f"Średnia ocen: {srednia:.2f}")
+
+if srednia >= 1.74:
+    print("Uczeń zaliczył przedmiot.")
+else:
+    print("Uczeń nie zaliczył przedmiotu.")
