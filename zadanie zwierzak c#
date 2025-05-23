@@ -1,0 +1,186 @@
+using System;
+using System.Threading;
+
+class Zwierzak
+{
+    public string imie;
+    public int glod = 50;
+    public int zabawa = 50;
+    public int energia = 50;
+
+    public Zwierzak(string nazwa)
+    {
+        imie = nazwa;
+    }
+
+    public void Karm(Jedzenie jedzenie)
+    {
+        glod -= jedzenie.odzywianie;
+        if (glod < 0) glod = 0;
+        Console.WriteLine(imie + " zjadł " + jedzenie.nazwa + ", glod: " + glod);
+    }
+
+    public void BawSie(Zabawka zabawka)
+    {
+        if (energia < 10)
+        {
+            Console.WriteLine(imie + " nie ma sily na zabawę");
+            return;
+        }
+        zabawa += zabawka.zabawaDoda;
+        if (zabawa > 100) zabawa = 100;
+        energia -= zabawka.energiaZuzyta;
+        if (energia < 0) energia = 0;
+        Console.WriteLine(imie + " bawił się " + zabawka.nazwa + ". Zabawa: " + zabawa + ", energia: " + energia);
+    }
+
+    public void Spij()
+    {
+        Console.WriteLine(imie + " śpi...");
+        Thread.Sleep(1000);
+        energia += 30;
+        if (energia > 100) energia = 100;
+        glod += 10;
+        if (glod > 100) glod = 100;
+        Console.WriteLine(imie + " się obudził. Energia: " + energia + ", glod: " + glod);
+    }
+
+    public bool Zyje()
+    {
+        if (glod >= 100)
+        {
+            Console.WriteLine(imie + " umarł z glodu.");
+            return false;
+        }
+        if (zabawa <= 0)
+        {
+            Console.WriteLine(imie + " umarł z nudów.");
+            return false;
+        }
+        if (energia <= 0)
+        {
+            Console.WriteLine(imie + " padł ze zmęczenia.");
+            return false;
+        }
+        return true;
+    }
+
+    public void Status()
+    {
+        Console.WriteLine("\n" + imie + " - glod: " + glod + ", zabawa: " + zabawa + ", energia: " + energia);
+    }
+}
+
+class Jedzenie
+{
+    public string nazwa;
+    public int odzywianie;
+
+    public Jedzenie(string n, int o)
+    {
+        nazwa = n;
+        odzywianie = o;
+    }
+}
+
+class Zabawka
+{
+    public string nazwa;
+    public int zabawaDoda;
+    public int energiaZuzyta;
+
+    public Zabawka(string n, int zab, int en)
+    {
+        nazwa = n;
+        zabawaDoda = zab;
+        energiaZuzyta = en;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Zwierzak zw = new Zwierzak("Maciek");
+
+        Jedzenie[] jedzonko = {
+            new Jedzenie("chipsy", 20),
+            new Jedzenie("mieso", 30),
+            new Jedzenie("czekolada", 15)
+        };
+
+        Zabawka[] zabawki = {
+            new Zabawka("konsola", 25, 10),
+            new Zabawka("patyk", 15, 5),
+            new Zabawka("pilka", 30, 20)
+        };
+
+        while (zw.Zyje())
+        {
+            zw.Status();
+
+            Console.WriteLine("Co chcesz zrobić?");
+            Console.WriteLine("1 - Nakarm");
+            Console.WriteLine("2 - Baw się");
+            Console.WriteLine("3 - Śpij");
+            Console.WriteLine("4 - Nic nie rób");
+
+            Console.Write("> ");
+            string wyb = Console.ReadLine();
+
+            if (wyb == "1")
+            {
+                Console.WriteLine("Co podać?");
+                for (int i = 0; i < jedzonko.Length; i++)
+                    Console.WriteLine((i+1) + " - " + jedzonko[i].nazwa + " (+" + jedzonko[i].odzywianie + ")");
+
+                Console.Write("> ");
+                int nr;
+                if (int.TryParse(Console.ReadLine(), out nr) && nr >=1 && nr <= jedzonko.Length)
+                {
+                    zw.Karm(jedzonko[nr - 1]);
+                }
+                else
+                {
+                    Console.WriteLine("Nie ma takiego jedzenia.");
+                }
+            }
+            else if (wyb == "2")
+            {
+                Console.WriteLine("Z czym się bawić?");
+                for (int i = 0; i < zabawki.Length; i++)
+                    Console.WriteLine((i+1) + " - " + zabawki[i].nazwa + " (+" + zabawki[i].zabawaDoda + " zabawy, -" + zabawki[i].energiaZuzyta + " energii)");
+
+                Console.Write("> ");
+                int nr;
+                if (int.TryParse(Console.ReadLine(), out nr) && nr >= 1 && nr <= zabawki.Length)
+                {
+                    zw.BawSie(zabawki[nr - 1]);
+                }
+                else
+                {
+                    Console.WriteLine("Nie ma takiej zabawki.");
+                }
+            }
+            else if (wyb == "3")
+            {
+                zw.Spij();
+            }
+            else if (wyb == "4")
+            {
+                Console.WriteLine("Nic nie robisz... czas mija");
+                Thread.Sleep(1000);
+            }
+            else
+            {
+                Console.WriteLine("Nie znam tej opcji.");
+            }
+
+            // trochę czasu i energii ucieka
+            zw.glod += 5;
+            zw.zabawa -= 5;
+        }
+
+        Console.WriteLine("Koniec gry.");
+    }
+}
