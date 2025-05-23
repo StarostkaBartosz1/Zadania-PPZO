@@ -1,0 +1,42 @@
+using System;
+
+class Program
+{
+    static void Main()
+	{
+		Console.WriteLine("Obliczanie średniej ucznia ");
+	
+		Console.WriteLine("Wpisz liczbe ocen ");
+		if (!int.TryParse(Console.ReadLine(), out int n) || n <= 0)
+		{
+			Console.WriteLine("Liczba ocen musi być liczba dodatnia ");
+			return;
+		}
+		
+		double suma = 0;
+
+        for (int i = 1; i <= n; i++)
+        {
+			Console.WriteLine($"wpisz pierwsza ocene {i} (1-6): ");
+			if (!double.TryParse(Console.ReadLine(), out double ocena) || ocena < 1 || ocena > 6)
+            {
+                Console.WriteLine("Ocena musi być w skali od 1 do 6.");
+                return;
+            }
+            suma += ocena;
+        }
+
+        double srednia = suma / n;
+        Console.WriteLine($"Średnia: {srednia:F2}");
+
+        if (srednia >= 1.76)
+        {
+            Console.WriteLine("Uczeń zdał.");
+        }
+        else
+        {
+            Console.WriteLine("Uczeń nie zdał.");
+        }
+    }
+}
+	
