@@ -1,0 +1,106 @@
+import time
+import random
+
+class Pet:
+    def __init__(self, name):
+        self.name = name
+        self.hunger = 50     
+        self.fun = 50        
+        self.energy = 50     
+
+    def feed(self, food):
+        self.hunger = max(0, self.hunger - food.nutrition)
+        print(f"{self.name} zjadł {food.name} i jego poziom głodu wynosi: {self.hunger}/100.")
+
+    def play(self, toy):
+        if self.energy < 10:
+            print(f"{self.name} nie ma siły na zabawę")
+        else:
+            self.fun = min(100, self.fun + toy.fun_value)
+            self.energy = max(0, self.energy - toy.energy_cost)
+            print(f"{self.name} bawił się {toy.name} jego poziom zabawy wynosi {self.fun}/100 i energia {self.energy}/100.")
+
+    def sleep(self):
+        print(f"{self.name} Zasypia..")
+        time.sleep(1)
+        self.energy = min(100, self.energy + 30)
+        self.hunger = min(100, self.hunger + 10)
+        print(f"{self.name} obudził się! – energia: {self.energy}/100, głód: {self.hunger}/100.")
+
+    def status(self):
+        print(f"\n--- Status {self.name} ---")
+        print(f"Głód:   {self.hunger}/100")
+        print(f"Zabawa: {self.fun}/100")
+        print(f"Energia:{self.energy}/100")
+        print("--------------------------")
+
+    def is_alive(self):
+        if self.hunger >= 100:
+            print(f"{self.name} zmarł z głodu")
+            return False
+        if self.fun <= 0:
+            print(f"{self.name} zmarł z braku zabawy")
+            return False
+        if self.energy <= 0:
+            print(f"{self.name} padł z wycieńczenia")
+            return False
+        return True
+
+
+class Food:
+    def __init__(self, name, nutrition):
+        self.name = name
+        self.nutrition = nutrition
+
+
+class Toy:
+    def __init__(self, name, fun_value, energy_cost):
+        self.name = name
+        self.fun_value = fun_value
+        self.energy_cost = energy_cost
+
+
+
+pet = Pet("Maciek")
+foods = [Food("chips", 20), Food("mięso", 30), Food("czekolada", 15)]
+toys = [Toy("konsola", 25, 10), Toy("patyk", 15, 5), Toy("pilka", 30, 20)]
+
+while pet.is_alive():
+    pet.status()
+    print("\nCo chcesz zrobić?")
+    print("1 - Nakarm")
+    print("2 - baw się")
+    print("3 - Spij")
+    print("4 - Nic nie rób (czas mija)")
+
+    choice = input("> ")
+
+    if choice == "1":
+        print("Czym chcesz nakarmić?")
+        for i, food in enumerate(foods):
+            print(f"{i+1} - {food.name} (+{food.nutrition} do syta)")
+        f_choice = int(input("> ")) - 1
+        pet.feed(foods[f_choice])
+
+    elif choice == "2":
+        print("Czym chcesz się bawić??")
+        for i, toy in enumerate(toys):
+            print(f"{i+1} - {toy.name} (+{toy.fun_value} zabawy, -{toy.energy_cost} energii)")
+        t_choice = int(input("> ")) - 1
+        pet.play(toys[t_choice])
+
+    elif choice == "3":
+        pet.sleep()
+
+    elif choice == "4":
+        print("Czas mija...")
+        time.sleep(1)
+
+    else:
+        print("Nieznana komenda.")
+
+    pet.hunger += 5
+    pet.fun -= 5
+
+print("Koniec gry..")
+1
