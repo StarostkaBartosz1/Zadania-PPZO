@@ -1,0 +1,53 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Kalkulator liczb");
+
+        Console.Write("Wybierz pierwsza liczbe: ");
+        if (!double.TryParse(Console.ReadLine(), out double a))
+        {
+            Console.WriteLine("Niepoprawna liczba.");
+            return;
+        }
+
+        Console.Write("Wybierz druga liczbe ");
+        if (!double.TryParse(Console.ReadLine(), out double b))
+        {
+            Console.WriteLine("Niepoprawna liczba.");
+            return;
+        }
+
+        Console.Write("Wybierz operację (+, -, *, /): ");
+        string operacja = Console.ReadLine();
+
+        double wynik;
+        switch (operacja)
+        {
+            case "+":
+                wynik = a + b;
+                break;
+            case "-":
+                wynik = a - b;
+                break;
+            case "*":
+                wynik = a * b;
+                break;
+            case "/":
+                if (b == 0)
+                {
+                    Console.WriteLine("Błąd: Nie mozna dzielic przez zero!");
+                    return;
+                }
+                wynik = a / b;
+                break;
+            default:
+                Console.WriteLine("Nieznana operacja.");
+                return;
+        }
+
+        Console.WriteLine($"Wynik: {wynik}");
+    }
+}
